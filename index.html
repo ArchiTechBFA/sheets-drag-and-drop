@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sheets Drag and Drop Auth</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 50px;
+    }
+    .notice {
+      background-color: #f0f0f0;
+      border: 1px solid #ccc;
+      padding: 20px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Google Drive Auth Complete</h1>
+  <div class="notice">
+    If you're seeing this page after Google sign-in, your access token has been captured and saved. You can now return to the Google Sheets tab and start dragging and dropping.
+  </div>
+
+  <script>
+    // Parse access token from URL hash
+    const hashParams = new URLSearchParams(window.location.hash.slice(1));
+    const accessToken = hashParams.get('access_token');
+
+    if (accessToken) {
+      console.log('Access Token:', accessToken);
+
+      // Save token to localStorage for use in content script
+      localStorage.setItem('google_access_token', accessToken);
+
+      // Remove token from URL
+      history.replaceState(null, '', window.location.pathname);
+    } else {
+      console.warn('No access token found in URL');
+    }
+  </script>
+</body>
+</html>
