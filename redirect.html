@@ -1,18 +1,16 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>OAuth Redirect</title>
-</head>
 <body>
-  <script>
-    const hashParams = new URLSearchParams(window.location.hash.substring(1));
-    const accessToken = hashParams.get('access_token');
-    if (accessToken) {
-      window.opener.postMessage({ accessToken }, '*');
+<script>
+  const hash = new URLSearchParams(location.hash.substring(1));
+  const token = hash.get('access_token');
+  if (token) {
+    chrome.runtime.sendMessage({ type: "set_token", token }, (res) => {
       window.close();
-    } else {
-      document.body.innerText = "Authorization failed or was cancelled.";
-    }
-  </script>
+    });
+  } else {
+    document.body.innerText = "OAuth failed.";
+  }
+</script>
 </body>
 </html>
