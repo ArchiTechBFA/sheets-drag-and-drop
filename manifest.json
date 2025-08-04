@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "Sheets Drag and Drop",
+  "version": "1.0",
+  "description": "Drag and drop files into Google Sheets with Drive upload",
+  "permissions": [
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://docs.google.com/spreadsheets/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://docs.google.com/spreadsheets/*"],
+      "js": ["content-script.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "action": {
+    "default_title": "Sheets Drag and Drop"
+  }
+}
