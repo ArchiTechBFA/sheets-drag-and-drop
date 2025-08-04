@@ -1,37 +1,58 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Authorize with Google</title>
-  <script>
-    function authorize() {
-      const clientId = '870470662608-g8ikslmnphqs9rogtpm66p0nbfskc0jr.apps.googleusercontent.com';
-      const redirectUri = 'https://architechbfa.github.io/sheets-drag-and-drop/';
-      const scope = 'https://www.googleapis.com/auth/drive.file';
-      const authUrl =
-        `https://accounts.google.com/o/oauth2/v2/auth?` +
-        `response_type=token&client_id=${clientId}` +
-        `&redirect_uri=${redirectUri}` +
-        `&scope=${encodeURIComponent(scope)}` +
-        `&prompt=consent`;
-
-      window.location.href = authUrl;
-    }
-
-    // Save access token on redirect
-    window.onload = () => {
-      if (window.location.hash.includes('access_token')) {
-        const params = new URLSearchParams(window.location.hash.slice(1));
-        const token = params.get('access_token');
-        if (token) {
-          localStorage.setItem('google_access_token', token);
-          document.body.innerHTML = '<h2>✅ Authorized! You can close this tab.</h2>';
-        }
-      }
-    };
-  </script>
+    <meta charset="UTF-8">
+    <title>Authorize Google Drive</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding: 40px; }
+        button { font-size: 16px; padding: 10px 20px; cursor: pointer; }
+    </style>
 </head>
 <body>
-  <h1>Authorize with Google</h1>
-  <button onclick="authorize()">Click to Authorize</button>
+
+    <div id="content">
+        <h1>Authorize with Google Drive</h1>
+        <p>Click the button below to allow this extension to upload files to your Google Drive.</p>
+        <button id="authButton">Authorize with Google</button>
+    </div>
+
+    <script>
+        const CLIENT_ID = '870470662608-g8ikslmnphqs9rogtpm66p0nbfskc0jr.apps.googleusercontent.com';
+        const REDIRECT_URI = 'https://architechbfa.github.io/sheets-drag-and-drop/';
+        const SCOPES = 'https://www.googleapis.com/auth/drive.file';
+
+        // --- Part 1: Handle the redirect back from Google ---
+        window.onload = () => {
+            // Check if the URL has an access token in it
+            if (window.location.hash.includes('access_token')) {
+                const params = new URLSearchParams(window.location.hash.substring(1));
+                const token = params.get('access_token');
+
+                if (token) {
+                    // Save the token to localStorage, where the extension can find it
+                    localStorage.setItem('google_drive_token', token);
+                    
+                    // Show a success message
+                    document.getElementById('content').innerHTML = '<h1>✅ Success!</h1><p>You have been authorized. You can now close this tab and return to Google Sheets.</p>';
+                }
+            }
+        };
+
+        // --- Part 2: Start the authorization process when the button is clicked ---
+        const authButton = document.getElementById('authButton');
+        if (authButton) {
+            authButton.onclick = () => {
+                const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+                    `client_id=${CLIENT_ID}` +
+                    `&redirect_uri=${REDIRECT_URI}` +
+                    `&response_type=token` +
+                    `&scope=${SCOPES}` +
+                    `&prompt=consent`;
+                
+                // Redirect the user to Google to sign in
+                window.location.href = authUrl;
+            };
+        }
+    </script>
 </body>
 </html>
