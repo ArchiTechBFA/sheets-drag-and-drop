@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>OAuth Redirect</title>
+</head>
+<body>
+  <script>
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const accessToken = hashParams.get('access_token');
+    if (accessToken) {
+      window.opener.postMessage({ accessToken }, '*');
+      window.close();
+    } else {
+      document.body.innerText = "Authorization failed or was cancelled.";
+    }
+  </script>
+</body>
+</html>
